@@ -50,7 +50,7 @@ parser.add_argument('--noise', type=str, default='.',
 parser.add_argument('--chop', action='store_true',
                     help='enable memory-efficient forward')
 
-# Model specifications
+# DRLN Model specifications
 parser.add_argument('--model', default='EDSR',
                     help='model name')
 
@@ -71,6 +71,14 @@ parser.add_argument('--shift_mean', default=True,
 parser.add_argument('--precision', type=str, default='single',
                     choices=('single', 'half'),
                     help='FP precision for test (single | half)')
+
+# RDN Model specifications
+parser.add_argument('--G0', type=int, default=64,
+                    help='default number of filters. (Use in RDN)')
+parser.add_argument('--RDNkSize', type=int, default=3,
+                    help='default kernel size. (Use in RDN)')
+parser.add_argument('--RDNconfig', type=str, default='B',
+                    help='parameters config of RDN. (Use in RDN)')
 
 # Training specifications
 parser.add_argument('--reset', action='store_true',

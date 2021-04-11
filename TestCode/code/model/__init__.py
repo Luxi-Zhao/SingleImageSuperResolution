@@ -65,6 +65,8 @@ class Model(nn.Module):
 
     def save(self, apath, epoch, is_best=False):
         target = self.get_model()
+        if not os.path.exists(os.path.join(apath, 'model')):
+            os.makedirs(os.path.join(apath, 'model'))
         torch.save(
             target.state_dict(), 
             os.path.join(apath, 'model', 'model_latest.pt')

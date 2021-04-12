@@ -49,8 +49,6 @@ class RDN(nn.Module):
         G0 = args.G0
         kSize = args.RDNkSize
 
-        self.skipp_connections = {2, 5, 8, 11, 15, 19} # layers to add skip connections
-
         # number of RDB blocks, conv layers, out channels
         self.D, C, G = {
             'A': (20, 6, 32),
@@ -96,19 +94,13 @@ class RDN(nn.Module):
     def forward(self, x):
         f__1 = self.SFENet1(x)
         x  = self.SFENet2(f__1)
-        prev_x = x
 
         RDBs_out = []
         for i in range(self.D):
             x = self.RDBs[i](x)
-            
-            if i in self.skipp_connections:
-                x += prev_x
-                prev_x = x
-
             RDBs_out.append(x)
 
         x = self.GFF(torch.cat(RDBs_out,1))
-        x += f__1 # long skip connection
+        x += f__1
 
         return self.UPNet(x)

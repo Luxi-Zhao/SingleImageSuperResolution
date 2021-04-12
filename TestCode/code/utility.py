@@ -93,7 +93,7 @@ class checkpoint():
             if not os.path.exists(ext_dir_epoch):
                 os.makedirs(ext_dir_epoch)
             trainer.model.save(ext_dir_epoch, epoch)
-            trainer.loss.save(self.dir)
+            trainer.loss.save(ext_dir_epoch)
             torch.save(self.log, os.path.join(ext_dir_epoch, 'psnr_log.pt'))
             torch.save(
                 trainer.optimizer.state_dict(),

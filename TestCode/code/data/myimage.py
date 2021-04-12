@@ -20,6 +20,11 @@ class MyImage(data.Dataset):
         self.name = 'MyImage'
         self.scale = args.scale
         self.idx_scale = 0
+        '''
+        Assumes directory structure
+        ../LR/LRBI/<testset>/x<scale>/name_LRBI_x<scale>.png
+        ../HR/<testset>/x<scale>/name_HR_x<scale>.png
+        '''
         apath = args.testpath + '/' + args.testset + '/x' + str(args.scale[0])
         hrpath = args.testpath + '/../../HR/' + args.testset + '/x' + str(args.scale[0])
 

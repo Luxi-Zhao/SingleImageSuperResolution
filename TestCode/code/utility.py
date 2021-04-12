@@ -49,7 +49,7 @@ class checkpoint():
             if args.save == '.': args.save = now
             self.dir = '../SR/' + args.degradation + '/' + args.save
         else:
-            self.dir = '../experiment/' + args.load
+            self.dir = args.load
             if not os.path.exists(self.dir):
                 args.load = '.'
             else:

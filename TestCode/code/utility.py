@@ -115,7 +115,7 @@ class checkpoint():
         plt.xlabel('Epochs')
         plt.ylabel('PSNR')
         plt.grid(True)
-        plt.savefig('{}/test_{}.pdf'.format(self.dir, self.args.data_test))
+        plt.savefig('{}/test_{}.png'.format(self.dir, self.args.data_test))
         plt.close(fig)
 
     def save_results(self, filename, save_list, scale):

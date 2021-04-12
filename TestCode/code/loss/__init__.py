@@ -113,7 +113,7 @@ class Loss(nn.modules.loss._Loss):
             plt.xlabel('Epochs')
             plt.ylabel('Loss')
             plt.grid(True)
-            plt.savefig('{}/loss_{}.pdf'.format(apath, l['type']))
+            plt.savefig('{}/loss_{}.png'.format(apath, l['type']))
             plt.close(fig)
 
     def get_loss_module(self):

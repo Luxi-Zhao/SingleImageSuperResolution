@@ -49,7 +49,7 @@ class RDN(nn.Module):
         G0 = args.G0
         kSize = args.RDNkSize
 
-        self.skipp_connections = {2, 5, 8, 11, 15, 19} # layers to add skip connections
+        self.skip_connections = {2, 5, 8, 11, 15, 19} # layers to add skip connections
 
         # number of RDB blocks, conv layers, out channels
         self.D, C, G = {
@@ -102,7 +102,7 @@ class RDN(nn.Module):
         for i in range(self.D):
             x = self.RDBs[i](x)
             
-            if i in self.skipp_connections:
+            if i in self.skip_connections:
                 x += prev_x
                 prev_x = x
 

@@ -100,7 +100,6 @@ class Trainer():
                     if not no_eval:
                         eval_acc += utility.calc_psnr(
                             sr, hr, scale, self.args.rgb_range,
-                            benchmark=self.loader_test.dataset.benchmark
                         )
                         save_list.extend([lr, hr])
 

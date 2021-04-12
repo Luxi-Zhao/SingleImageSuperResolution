@@ -21,16 +21,26 @@ class MyImage(data.Dataset):
         self.scale = args.scale
         self.idx_scale = 0
         apath = args.testpath + '/' + args.testset + '/x' + str(args.scale[0])
+        hrpath = args.testpath + '/../../HR/' + args.testset + '/x' + str(args.scale[0])
 
         self.filelist = []
+        self.hr_filelist = []
         self.imnamelist = []
         if not train:
             for f in os.listdir(apath):
                 try:
+                    # Read LR image
                     filename = os.path.join(apath, f)
                     misc.imread(filename)
                     self.filelist.append(filename)
                     self.imnamelist.append(f)
+
+                    # Read HR image
+                    prefix, _, postfix = f.split('_')
+                    hr_f = prefix + '_HR_' + postfix
+                    hr_filename = os.path.join(hrpath, hr_f)
+                    misc.imread(hr_filename)
+                    self.hr_filelist.append(hr_filename) 
                 except:
                     pass
 
@@ -39,8 +49,16 @@ class MyImage(data.Dataset):
         filename, _ = os.path.splitext(filename)
         lr = misc.imread(self.filelist[idx])
         lr = common.set_channel([lr], self.args.n_colors)[0]
+        lr_tensor = common.np2Tensor([lr], self.args.rgb_range)[0]
 
-        return common.np2Tensor([lr], self.args.rgb_range)[0], -1, filename
+        hr_filename = os.path.split(self.hr_filelist[idx])[-1]
+        hr_filename, _ = os.path.splitext(hr_filename)
+        hr = misc.imread(self.hr_filelist[idx])
+        hr = common.set_channel([hr], self.args.n_colors)[0]
+        hr_tensor = common.np2Tensor([hr], self.args.rgb_range)[0]
+
+        return lr_tensor, hr_tensor, filename
+
     def __len__(self):
         return len(self.filelist)
 

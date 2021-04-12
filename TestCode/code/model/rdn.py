@@ -53,6 +53,7 @@ class RDN(nn.Module):
         self.D, C, G = {
             'A': (20, 6, 32),
             'B': (16, 8, 64),
+            'C': (20, 9, 64),
         }[args.RDNconfig]
 
         # Shallow feature extraction net

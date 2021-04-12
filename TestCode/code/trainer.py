@@ -101,11 +101,9 @@ class Trainer():
                         eval_acc += utility.calc_psnr(
                             sr, hr, scale, self.args.rgb_range,
                         )
-                        save_list.extend([lr, hr])
 
                     if self.args.save_results:
-                        #self.ckp.save_results(filename, save_list, scale)
-                        self.ckp.save_results_nopostfix(filename, save_list, scale)
+                        self.ckp.save_results_nopostfix(filename, save_list, scale, epoch)
 
                 self.ckp.log[-1, idx_scale] = eval_acc / len(self.loader_test)
                 best = self.ckp.log.max(0)

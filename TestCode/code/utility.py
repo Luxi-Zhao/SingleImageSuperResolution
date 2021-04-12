@@ -126,8 +126,7 @@ class checkpoint():
             ndarr = normalized.byte().permute(1, 2, 0).cpu().numpy()
             misc.imsave('{}{}.png'.format(filename, p), ndarr)
 
-    def save_results_nopostfix(self, filename, save_list, scale):
-        #print(filename)
+    def save_results_nopostfix(self, filename, save_list, scale, epoch):
         if self.args.degradation == 'BI':
             filename = filename.replace("LRBI", self.args.save)
         elif self.args.degradation == 'BD':
@@ -138,7 +137,7 @@ class checkpoint():
         for v, p in zip(save_list, postfix):
             normalized = v[0].data.mul(255 / self.args.rgb_range)
             ndarr = normalized.byte().permute(1, 2, 0).cpu().numpy()
-            misc.imsave('{}.png'.format(filename), ndarr)
+            misc.imsave('{}_{}_ep{}.png'.format(filename, p, epoch), ndarr)
 
 
 def quantize(img, rgb_range):

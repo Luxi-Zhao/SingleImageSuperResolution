@@ -142,6 +142,9 @@ parser.add_argument('--print_every', type=int, default=100,
                     help='how many batches to wait before logging training status')
 parser.add_argument('--save_results', action='store_true',
                     help='save output results')
+parser.add_argument('--ext_save_path', type=str, default='/content/drive/MyDrive/2516/DRLN')
+parser.add_argument('--save_model_every', type=int, default=10,
+                    help='save model every x epochs')
 
 # New options
 parser.add_argument('--n_resgroups', type=int, default=10,

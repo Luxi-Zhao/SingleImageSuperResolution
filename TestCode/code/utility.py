@@ -87,6 +87,19 @@ class checkpoint():
             os.path.join(self.dir, 'optimizer.pt')
         )
 
+        if epoch % self.args.save_model_every == 0:
+            print('Saving model for epoch {} to {}'.format(epoch, self.args.ext_save_path))
+            ext_dir_epoch = os.path.join(self.args.ext_save_path, 'epoch{}'.format(epoch))
+            if not os.path.exists(ext_dir_epoch):
+                os.makedirs(ext_dir_epoch)
+            trainer.model.save(ext_dir_epoch, epoch)
+            trainer.loss.save(self.dir)
+            torch.save(self.log, os.path.join(ext_dir_epoch, 'psnr_log.pt'))
+            torch.save(
+                trainer.optimizer.state_dict(),
+                os.path.join(ext_dir_epoch, 'optimizer.pt')
+            )
+
     def add_log(self, log):
         self.log = torch.cat([self.log, log])
 

@@ -40,7 +40,8 @@ class RDB(nn.Module):
         self.LFF = nn.Conv2d(G0 + C*G, G0, 1, padding=0, stride=1)
 
     def forward(self, x):
-        return self.LFF(self.convs(x)) + x
+        # return self.LFF(self.convs(x)) + x # local residual learning
+        return self.LFF(self.convs(x))
 
 class RDN(nn.Module):
     def __init__(self, args):

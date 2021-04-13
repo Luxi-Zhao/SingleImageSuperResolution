@@ -73,10 +73,9 @@ class RDN(nn.Module):
                 RDB(growRate0 = G0, growRate = G, nConvLayers = C)
             )
 
-        # Global Feature Fusion
         self.GFF = nn.Sequential(*[
             nn.Conv2d(self.D * G0, G0, 1, padding=0, stride=1),
-            nn.Conv2d(G0, G0, kSize, padding=(kSize-1)//2, stride=1)
+            # nn.Conv2d(G0, G0, kSize, padding=(kSize-1)//2, stride=1) # Global Feature Fusion
         ])
 
         # Up-sampling net

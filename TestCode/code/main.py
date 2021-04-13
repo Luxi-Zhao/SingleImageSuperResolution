@@ -14,7 +14,7 @@ if checkpoint.ok:
     model = model.Model(args, checkpoint)
 
     print('Printing trainable model parameter count:')
-    print(sum(p.numel() for p in self.model.parameters() if p.requires_grad))
+    print(sum(p.numel() for p in model.parameters() if p.requires_grad))
     
     loss = loss.Loss(args, checkpoint) if not args.test_only else None
     t = Trainer(args, loader, model, loss, checkpoint)

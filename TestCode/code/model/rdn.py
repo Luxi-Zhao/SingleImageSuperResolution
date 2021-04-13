@@ -2,11 +2,10 @@
 # https://arxiv.org/abs/1802.08797
 
 from model import common
-from drln import CALayer
+from model import drln
 
 import torch
 import torch.nn as nn
-
 
 def make_model(args, parent=False):
     return RDN(args)
@@ -32,17 +31,17 @@ class RDB(nn.Module):
         C  = nConvLayers
         
         convs = []
-        for c in range(C-3):
+        for c in range(C):
             convs.append(RDB_Conv(G0 + c*G, G))
         self.convs = nn.Sequential(*convs)
         
         # Local Feature Fusion, similar to compression unit
         self.LFF = nn.Conv2d(G0 + C * G, G0, 1, padding=0, stride=1)
         
-        self.laplacian = CALayer(G0)
+        self.laplacian = drln.CALayer(G0)
 
     def forward(self, x):
-        return self.laplacian(self.LFF(self.convs(x)) + x)
+        return self.laplacian(self.LFF(self.convs(x))) + x
 
 class RDN(nn.Module):
     def __init__(self, args):

@@ -2,6 +2,7 @@
 # https://arxiv.org/abs/1802.08797
 
 from model import common
+import model.ops as ops
 
 import torch
 import torch.nn as nn
@@ -49,11 +50,14 @@ class RDN(nn.Module):
         G0 = args.G0
         kSize = args.RDNkSize
 
+        self.new_blocks = {0, 3, 6, 9, 12, 16} # layers starting a new cascading block
+
         # number of RDB blocks, conv layers, out channels
         self.D, C, G = {
             'A': (20, 6, 32),
             'B': (16, 8, 64),
             'C': (20, 9, 64),
+            'D': (20, 6, 64),
         }[args.RDNconfig]
 
         # Shallow feature extraction net
@@ -65,6 +69,19 @@ class RDN(nn.Module):
         for i in range(self.D):
             self.RDBs.append(
                 RDB(growRate0 = G0, growRate = G, nConvLayers = C)
+            )
+        
+        # Convolutional layers in between RDBs
+        self.convs = nn.ModuleList()
+        counter = 2
+        for i in range(self.D):
+            if i in self.new_blocks:
+                counter = 2
+            else:
+                counter += 1
+
+            self.convs.append(
+                ops.BasicBlock(G0*counter, G0, 3, 1, 1)
             )
 
         # Global Feature Fusion
@@ -93,11 +110,24 @@ class RDN(nn.Module):
 
     def forward(self, x):
         f__1 = self.SFENet1(x)
-        x  = self.SFENet2(f__1)
+        x = self.SFENet2(f__1)
+        conv_out = concat_out = x
 
+        '''
+        b2 = self.b2(o1)
+        c2 = torch.cat([c1, b2], dim=1)
+        o2 = self.c2(c2)
+        '''
         RDBs_out = []
         for i in range(self.D):
-            x = self.RDBs[i](x)
+            x = self.RDBs[i](x) # b
+            if i in self.new_blocks:
+                concat_out = torch.cat([conv_out, x], dim=1)  # c
+            else:
+                concat_out = torch.cat([concat_out, x], dim=1)  # c
+            
+            x = self.convs[i](concat_out) # o
+            conv_out = x
             RDBs_out.append(x)
 
         x = self.GFF(torch.cat(RDBs_out,1))

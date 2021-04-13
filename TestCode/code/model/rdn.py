@@ -29,18 +29,52 @@ class RDB(nn.Module):
         super(RDB, self).__init__()
         G0 = growRate0
         G  = growRate
-        C  = nConvLayers
+        C = nConvLayers
+
+        self.head = RDB_Conv(G0, G)
         
         convs = []
-        for c in range(C):
-            convs.append(RDB_Conv(G0 + c*G, G))
+        for c in range(1, C):
+            convs.append(RDB_Conv(c*G, G))
         self.convs = nn.Sequential(*convs)
         
         # Local Feature Fusion
-        self.LFF = nn.Conv2d(G0 + C*G, G0, 1, padding=0, stride=1)
+        self.LFF = nn.Conv2d(C*G, G0, 1, padding=0, stride=1)
 
     def forward(self, x):
-        return self.LFF(self.convs(x)) + x
+        '''
+        # Unwrapping CM mechanism 
+        conv1 = self.relu(self.conv(x)) # RDB_Conv(G0)
+        cout1_dense = self.relu(torch.cat([x, conv1], 1)) # G0 + G
+        
+        conv2 = self.relu(self.conv2(conv1_dense)) # RDB_Conv(G0 + G)
+        cout2_dense = self.relu(torch.cat([conv1_dense, conv2], 1))  # x conv1 conv2  G0 + 2G
+        
+        conv3 = self.relu(self.conv2(conv2_dense)) # RDB_Conv(G0 + 2G)
+        cout3_dense = self.relu(torch.cat([conv2_dense, conv2], 1)) # x conv1 conv2 conv3
+   
+        # Without CM -------------------------------------------- 
+        conv1 = self.relu(self.conv(x))
+        
+        conv2 = self.relu(self.conv2(conv1)) # RDB_Conv(G)
+        cout2_dense = self.relu(torch.cat([conv1, conv2], 1))  # conv1 conv2 2G
+        
+        conv3 = self.relu(self.conv2(conv2_dense)) # RDB_Conv(2G)
+        cout3_dense = self.relu(torch.cat([conv2_dense, conv2], 1))  # conv1 conv2 conv3
+        
+        # SRDenseNet ----------------------------------------------
+        conv1 = self.relu(self.conv1(x))
+
+        conv2 = self.relu(self.conv2(conv1))
+        cout2_dense = self.relu(torch.cat([conv1,conv2], 1))
+
+        conv3 = self.relu(self.conv3(cout2_dense))
+        cout3_dense = self.relu(torch.cat([conv1,conv2,conv3], 1))
+        '''
+        
+        # New code -----------------------------------------------
+        conv1 = self.head(x)
+        return self.LFF(self.convs(conv1)) + x
 
 class RDN(nn.Module):
     def __init__(self, args):

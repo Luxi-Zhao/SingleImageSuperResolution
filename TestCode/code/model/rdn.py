@@ -10,6 +10,28 @@ import torch.nn as nn
 def make_model(args, parent=False):
     return RDN(args)
 
+class CALayer(nn.Module):
+    def __init__(self, channel, reduction=16):
+        super(CALayer, self).__init__()
+
+        # global pooling
+        self.avg_pool = nn.AdaptiveAvgPool2d(1)
+
+        # laplacian attention
+        self.c1 = ops.BasicBlock(channel , channel // reduction, 3, 1, 3, 3)
+        self.c2 = ops.BasicBlock(channel , channel // reduction, 3, 1, 5, 5)
+        self.c3 = ops.BasicBlock(channel , channel // reduction, 3, 1, 7, 7)
+        self.c4 = ops.BasicBlockSig((channel // reduction)*3, channel , 3, 1, 1) # sigmoid
+
+    def forward(self, x):
+        y = self.avg_pool(x)
+        c1 = self.c1(y)
+        c2 = self.c2(y)
+        c3 = self.c3(y)
+        c_out = torch.cat([c1, c2, c3], dim=1)
+        y = self.c4(c_out)
+        return x * y
+
 class RDB_Conv(nn.Module):
     def __init__(self, inChannels, growRate, kSize=3):
         super(RDB_Conv, self).__init__()
@@ -32,15 +54,17 @@ class RDB(nn.Module):
         C  = nConvLayers
         
         convs = []
-        for c in range(C):
+        for c in range(C-3):
             convs.append(RDB_Conv(G0 + c*G, G))
         self.convs = nn.Sequential(*convs)
         
-        # Local Feature Fusion
-        self.LFF = nn.Conv2d(G0 + C*G, G0, 1, padding=0, stride=1)
+        # Local Feature Fusion, similar to compression unit
+        self.LFF = nn.Conv2d(G0 + C * G, G0, 1, padding=0, stride=1)
+        
+        self.laplacian = CALayer(G0)
 
     def forward(self, x):
-        return self.LFF(self.convs(x)) + x
+        return self.laplacian(self.LFF(self.convs(x)) + x)
 
 class RDN(nn.Module):
     def __init__(self, args):

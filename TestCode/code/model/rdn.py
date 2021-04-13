@@ -2,6 +2,7 @@
 # https://arxiv.org/abs/1802.08797
 
 from model import common
+import model.ops as ops
 
 import torch
 import torch.nn as nn
@@ -31,16 +32,26 @@ class RDB(nn.Module):
         G  = growRate
         C  = nConvLayers
         
-        convs = []
-        for c in range(C):
-            convs.append(RDB_Conv(G0 + c*G, G))
-        self.convs = nn.Sequential(*convs)
+        self.r1 = ops.ResidualBlock(G0, G0)
+        self.r2 = ops.ResidualBlock(G0*2, G0*2)
+        self.r3 = ops.ResidualBlock(G0*4, G0*4)
         
         # Local Feature Fusion
-        self.LFF = nn.Conv2d(G0 + C*G, G0, 1, padding=0, stride=1)
+        self.LFF = nn.Conv2d(G0*8, G0, 1, padding=0, stride=1)
 
     def forward(self, x):
-        return self.LFF(self.convs(x)) + x
+        c0 =  x # G0
+
+        r1 = self.r1(c0) # G0
+        c1 = torch.cat([c0, r1], dim=1) # 2G0
+                
+        r2 = self.r2(c1) # 2G0
+        c2 = torch.cat([c1, r2], dim=1) # 4G0
+               
+        r3 = self.r3(c2) # 4G0
+        c3 = torch.cat([c2, r3], dim=1) # 8G0
+
+        return self.LFF(c3) + x
 
 class RDN(nn.Module):
     def __init__(self, args):

@@ -46,7 +46,7 @@ class RDB(nn.Module):
 
     def forward(self, x):
         conv1 = self.head(x)
-        return self.LFF(self.convs(conv1)) + x
+        return self.LFF(self.convs(conv1))
 
 class RDN(nn.Module):
     def __init__(self, args):

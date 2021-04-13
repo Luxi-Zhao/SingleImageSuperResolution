@@ -31,7 +31,10 @@ class RDB(nn.Module):
         G  = growRate
         C = nConvLayers
 
-        self.head = RDB_Conv(G0, G)
+        self.head = nn.Sequential(*[
+            nn.Conv2d(G0, G, kSize, padding=(kSize-1)//2, stride=1),
+            nn.ReLU()
+        ])
         
         convs = []
         for c in range(1, C):

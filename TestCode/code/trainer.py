@@ -83,6 +83,7 @@ class Trainer():
         with torch.no_grad():
             for idx_scale, scale in enumerate(self.scale):
                 eval_acc = 0
+                ssim = 0
                 self.loader_test.dataset.set_scale(idx_scale)
                 tqdm_test = tqdm(self.loader_test, ncols=80)
                 for idx_img, (lr, hr, filename, _) in enumerate(tqdm_test):
@@ -101,11 +102,15 @@ class Trainer():
                         eval_acc += utility.calc_psnr(
                             sr, hr, scale, self.args.rgb_range,
                         )
+                        ssim += utility.calc_ssim(
+                            sr, hr, scale, self.args.rgb_range,
+                        )
 
                     if self.args.save_results:
                         self.ckp.save_results_nopostfix(filename, save_list, scale, epoch)
 
                 self.ckp.log[-1, idx_scale] = eval_acc / len(self.loader_test)
+                ssim_avg = ssim / len(self.loader_test)
                 best = self.ckp.log.max(0)
                 self.ckp.write_log(
                     '[{} x{}]\tPSNR: {:.3f} (Best: {:.3f} @epoch {})'.format(
@@ -114,6 +119,13 @@ class Trainer():
                         self.ckp.log[-1, idx_scale],
                         best[0][idx_scale],
                         best[1][idx_scale] + 1
+                    )
+                )
+                self.ckp.write_log(
+                    '[{} x{}]\tSSIM: {:.3f}'.format(
+                        self.args.data_test,
+                        scale,
+                        ssim_avg
                     )
                 )
 

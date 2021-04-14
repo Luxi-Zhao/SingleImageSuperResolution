@@ -220,7 +220,7 @@ class DRLN(nn.Module):
         #c_out = torch.cat([b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20], dim=1)
         
         #b = self.convert(c_out)
-        b_out = a6 + x # long skip connection
+        b_out = a6 #  + x # long skip connection
         out = self.upsample(b_out, scale=self.scale )
 
         out = self.tail(out)

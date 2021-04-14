@@ -14,17 +14,19 @@ class CALayer(nn.Module):
         self.avg_pool = nn.AdaptiveAvgPool2d(1)
 
         # laplacian attention
-        self.c1 = ops.BasicBlock(channel , channel // reduction, 3, 1, 3, 3)
-        self.c2 = ops.BasicBlock(channel , channel // reduction, 3, 1, 5, 5)
-        self.c3 = ops.BasicBlock(channel , channel // reduction, 3, 1, 7, 7)
+        # self.c1 = ops.BasicBlock(channel , channel // reduction, 3, 1, 3, 3)
+        # self.c2 = ops.BasicBlock(channel , channel // reduction, 3, 1, 5, 5)
+        # self.c3 = ops.BasicBlock(channel , channel // reduction, 3, 1, 7, 7)
+        self.ch = ops.BasicBlock(channel , (channel // reduction)*3, 3, 1, 3, 3)
         self.c4 = ops.BasicBlockSig((channel // reduction)*3, channel , 3, 1, 1) # sigmoid
 
     def forward(self, x):
         y = self.avg_pool(x)
-        c1 = self.c1(y)
-        c2 = self.c2(y)
-        c3 = self.c3(y)
-        c_out = torch.cat([c1, c2, c3], dim=1)
+        # c1 = self.c1(y)
+        # c2 = self.c2(y)
+        # c3 = self.c3(y)
+        # c_out = torch.cat([c1, c2, c3], dim=1)
+        c_out = self.ch(y)
         y = self.c4(c_out)
         return x * y
 
@@ -220,7 +222,7 @@ class DRLN(nn.Module):
         #c_out = torch.cat([b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20], dim=1)
         
         #b = self.convert(c_out)
-        b_out = a6 + x # long skip connection
+        b_out = a6 # + x # long skip connection
         out = self.upsample(b_out, scale=self.scale )
 
         out = self.tail(out)

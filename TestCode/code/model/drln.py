@@ -137,7 +137,7 @@ class DRLN(nn.Module):
         b3 = self.b3(o2)
         c3 = torch.cat([c2, b3], dim=1)
         o3 = self.c3(c3)
-        a1 = o3 + c0 # short skip connection
+        a1 = o3 # + c0 # short skip connection
 
         b4 = self.b4(a1)
         c4 = torch.cat([o3, b4], dim=1)
@@ -150,7 +150,7 @@ class DRLN(nn.Module):
         b6 = self.b6(o5)
         c6 = torch.cat([c5, b6], dim=1)
         o6 = self.c6(c6)
-        a2 = o6 + a1 # short skip connection
+        a2 = o6 # + a1 # short skip connection
 
         b7 = self.b7(a2)
         c7 = torch.cat([o6, b7], dim=1)
@@ -163,7 +163,7 @@ class DRLN(nn.Module):
         b9 = self.b9(o8)
         c9 = torch.cat([c8, b9], dim=1)
         o9 = self.c9(c9)
-        a3 = o9 + a2 # short skip connection
+        a3 = o9 # + a2 # short skip connection
 
         b10 = self.b10(a3)
         c10 = torch.cat([o9, b10], dim=1)
@@ -177,7 +177,7 @@ class DRLN(nn.Module):
         b12 = self.b12(o11)
         c12 = torch.cat([c11, b12], dim=1)
         o12 = self.c12(c12)
-        a4 = o12 + a3 # short skip connection
+        a4 = o12 # + a3 # short skip connection
 
 
         b13 = self.b13(a4)
@@ -196,7 +196,7 @@ class DRLN(nn.Module):
         b16 = self.b16(o15)
         c16 = torch.cat([c15, b16], dim=1)
         o16 = self.c16(c16)
-        a5 = o16 + a4 # short skip connection
+        a5 = o16 # + a4 # short skip connection
 
 
         b17 = self.b17(a5)
@@ -215,7 +215,7 @@ class DRLN(nn.Module):
         b20 = self.b20(o19)
         c20 = torch.cat([c19, b20], dim=1)
         o20 = self.c20(c20)
-        a6 = o20 + a5 # short skip connection
+        a6 = o20 # + a5 # short skip connection
 
         #c_out = torch.cat([b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20], dim=1)
         

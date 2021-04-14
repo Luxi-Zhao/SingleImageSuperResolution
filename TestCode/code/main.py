@@ -12,6 +12,9 @@ checkpoint = utility.checkpoint(args)
 if checkpoint.ok:
     loader = data.Data(args)
     model = model.Model(args, checkpoint)
+    print('Trainable model parameter count:')
+    print(sum(p.numel() for p in model.parameters() if p.requires_grad))
+
     loss = loss.Loss(args, checkpoint) if not args.test_only else None
     t = Trainer(args, loader, model, loss, checkpoint)
     while not t.terminate():

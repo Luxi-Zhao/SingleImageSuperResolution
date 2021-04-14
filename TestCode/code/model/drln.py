@@ -17,7 +17,7 @@ class CALayer(nn.Module):
         # self.c1 = ops.BasicBlock(channel , channel // reduction, 3, 1, 3, 3)
         # self.c2 = ops.BasicBlock(channel , channel // reduction, 3, 1, 5, 5)
         # self.c3 = ops.BasicBlock(channel , channel // reduction, 3, 1, 7, 7)
-        self.ch = ops.BasicBlock(channel , (channel // reduction) * 3, 3, 1, 7, 7)
+        self.ch = ops.BasicBlock(channel , (channel // reduction) * 3, 3, 1, 3, 3)
         self.c4 = ops.BasicBlockSig((channel // reduction)*3, channel , 3, 1, 1) # sigmoid
 
     def forward(self, x):
@@ -26,7 +26,7 @@ class CALayer(nn.Module):
         # c2 = self.c2(y)
         # c3 = self.c3(y)
         # c_out = torch.cat([c1, c2, c3], dim=1)
-        c_out = self.sh(y)
+        c_out = self.ch(y)
         y = self.c4(c_out)
         return x * y
 

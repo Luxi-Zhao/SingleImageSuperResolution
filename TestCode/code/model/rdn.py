@@ -68,9 +68,10 @@ class RDN(nn.Module):
                 RDB(growRate0 = G0, growRate = G, nConvLayers = C)
             )
 
+        # Global Feature Fusion
         self.GFF = nn.Sequential(*[
             nn.Conv2d(self.D * G0, G0, 1, padding=0, stride=1),
-            # nn.Conv2d(G0, G0, kSize, padding=(kSize-1)//2, stride=1) # Global Feature Fusion
+            nn.Conv2d(G0, G0, kSize, padding=(kSize-1)//2, stride=1)
         ])
 
         # Up-sampling net
@@ -100,7 +101,7 @@ class RDN(nn.Module):
             x = self.RDBs[i](x)
             RDBs_out.append(x)
 
-        x = self.GFF(torch.cat(RDBs_out,1))
+        # x = self.GFF(torch.cat(RDBs_out,1))
         x += f__1
 
         return self.UPNet(x)

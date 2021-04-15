@@ -120,6 +120,10 @@ class DRLN(nn.Module):
         self.upsample = ops.UpsampleBlock(chs, self.scale , multi_scale=False)
         #self.convert = ops.ConvertBlock(chs, chs, 20)
         self.tail = nn.Conv2d(chs, 3, 3, 1, 1)
+        self.GFF = nn.Sequential(*[
+            nn.Conv2d(6 * chs, chs, 1, padding=0, stride=1),
+            nn.Conv2d(chs, chs, 3, padding=1, stride=1)
+        ])
                 
     def forward(self, x):
         x = self.sub_mean(x)
@@ -215,13 +219,17 @@ class DRLN(nn.Module):
         b20 = self.b20(o19)
         c20 = torch.cat([c19, b20], dim=1)
         o20 = self.c20(c20)
+
+        o_all = torch.cat([o1, o2, o3, o4, o5, o6, o7, o8, o9, o10, o11, o12, o13, o14, o15, o16, o17, o18, o19, o20], dim=1)
+
         a6 = o20 + a5 # short skip connection
 
         #c_out = torch.cat([b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20], dim=1)
         
         #b = self.convert(c_out)
         b_out = a6 + x # long skip connection
-        out = self.upsample(b_out, scale=self.scale )
+        b_out = self.GFF(torch.cat([a1, a2, a3, a4, a5, b_out]), dim=1)
+        out = self.upsample(b_out, scale=self.scale)
 
         out = self.tail(out)
         f_out = self.add_mean(out)

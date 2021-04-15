@@ -102,7 +102,7 @@ class Trainer():
                         eval_acc += utility.calc_psnr(
                             sr, hr, scale, self.args.rgb_range,
                         )
-                        if args.test_only:
+                        if self.args.test_only:
                             ssim += utility.calc_ssim(
                                 sr, hr, scale, self.args.rgb_range,
                             )

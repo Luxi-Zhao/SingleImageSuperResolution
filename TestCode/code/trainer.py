@@ -102,9 +102,10 @@ class Trainer():
                         eval_acc += utility.calc_psnr(
                             sr, hr, scale, self.args.rgb_range,
                         )
-                        ssim += utility.calc_ssim(
-                            sr, hr, scale, self.args.rgb_range,
-                        )
+                        if self.args.test_only:
+                            ssim += utility.calc_ssim(
+                                sr, hr, scale, self.args.rgb_range,
+                            )
 
                     if self.args.save_results:
                         self.ckp.save_results_nopostfix(filename, save_list, scale, epoch)

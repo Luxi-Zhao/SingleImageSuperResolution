@@ -228,7 +228,7 @@ class DRLN(nn.Module):
         
         #b = self.convert(c_out)
         b_out = a6 + x # long skip connection
-        b_out = self.GFF(torch.cat([a1, a2, a3, a4, a5, b_out]), dim=1)
+        b_out = self.GFF(torch.cat([a1, a2, a3, a4, a5, b_out], dim=1))
         out = self.upsample(b_out, scale=self.scale)
 
         out = self.tail(out)

@@ -9,6 +9,8 @@
 This repository includes the implementation of RDN and DRLN, as well as the four testing datasets: BSD100, Set14, Set5, Urban100. 
 Code is adapted from [here](https://github.com/saeed-anwar/DRLN).
 
+You can read the project report [here](Report.pdf).
+
 We provided all the necessary scripts to reproduce our experiments:
 
 - [Ablation Scripts](ablation_script) to train the ablation models for RDN and DRLN.
@@ -29,6 +31,8 @@ DRLN:
 - LA: Laplacian Attention
 
 ## Ablation Studies
+The baseline versions for RDN and DRLN can be run with the master branch.
+
 We have different branches for running different ablation studies:
 
 RDN:

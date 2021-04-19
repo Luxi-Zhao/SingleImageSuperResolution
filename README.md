@@ -9,6 +9,14 @@
 This repository includes the implementation of RDN and DRLN, as well as the four testing datasets: BSD100, Set14, Set5, Urban100. 
 Code is adapted from [here](https://github.com/saeed-anwar/DRLN).
 
+We provided all the necessary scripts to reproduce our experiments:
+
+- [Ablation Scripts](ablation_script) to train the ablation models for RDN and DRLN.
+- [Integration Scripts](integration_script) to train the integration models for RDN and DRLN.
+- [Test Scripts](test_script) to run test the specified models on the four testing datasets
+- [Plot Scripts](plot_script) to plot the data
+
+All the python notebook can be executed in the Google Colab environment.
 ## Major Components:
 RDN:
 - LRL: Local Residual Learning
@@ -21,8 +29,6 @@ DRLN:
 - LA: Laplacian Attention
 
 ## Ablation Studies
-All the python notebook scripts for running the ablation-study experiments can be found in [ablation_script](ablation_script) folder.
-
 We have different branches for running different ablation studies:
 
 RDN:
@@ -44,8 +50,6 @@ DLRN:
 - drln-no-everything: Ablate LA, LSC, SSC
 
 ## Integration Studies
-All the python notebook scripts for running the integration-study experiments can be found in [integration_script](integration_script) folder.
-
 We have different branches for running integration studies:
 
 RDN:

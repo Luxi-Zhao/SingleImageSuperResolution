@@ -7,7 +7,7 @@
 ---
 
 This repository includes the implementation of RDN and DRLN, as well as the four testing datasets: BSD100, Set14, Set5, Urban100. 
-Code is adapted from [here](https://github.com/saeed-anwar/DRLN).
+Code for data loading and model training is located in folder `TestCode` and is adapted from the DRLN(https://github.com/saeed-anwar/DRLN) and [EDSR](https://github.com/sanghyun-son/EDSR-PyTorch) GitHub repositories.
 
 You can read the project report [here](Report.pdf).
 
